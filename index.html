@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Input Box with Undo/Redo Buttons</title>
+    <style>
+      button {
+        margin: 5px;
+      }
+      textarea {
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <textarea id="input" rows="4" cols="50"></textarea>
+      <br />
+      <button id="undoButton" disabled>Undo</button>
+      <button id="redoButton" disabled>Redo</button>
+    </div>
+    <script>
+      const MAX_LENGTH = 10;
+      const inputElement = document.getElementById("input");
+      const undoButton = document.getElementById("undoButton");
+      const redoButton = document.getElementById("redoButton");
+      let textHistory = [];
+      let currentIndex = 0;
+      inputElement.addEventListener("input", () => {
+        textHistory[currentIndex] = inputElement.value;
+        currentIndex++;
+        undoButton.disabled = currentIndex <= 1;
+        redoButton.disabled = currentIndex >= textHistory.length;
+        if (textHistory.length > MAX_LENGTH + 1) {
+          textHistory.shift();
+          currentIndex--;
+        }
+      });
+      undoButton.addEventListener("click", () => {
+        currentIndex--;
+        inputElement.value = textHistory[currentIndex - 1];
+        undoButton.disabled = currentIndex <= 1;
+        redoButton.disabled = currentIndex >= textHistory.length;
+      });
+      redoButton.addEventListener("click", () => {
+        currentIndex++;
+        inputElement.value = textHistory[currentIndex - 1];
+        undoButton.disabled = currentIndex <= 1;
+        redoButton.disabled = currentIndex >= textHistory.length;
+      });
+    </script>
+  </body>
+</html>
